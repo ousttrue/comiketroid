@@ -1,35 +1,34 @@
-package jp.ousttrue.comikeroid;
+package jp.ousttrue.comiketroid;
 
 import java.io.InputStreamReader;
+import java.io.FileInputStream;
+import java.io.File;
 import android.content.Context;
-//import au.com.bytecode.opencsv.CSVReader;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import au.com.bytecode.opencsv.CSVReader;
 import android.util.Log;
-import android.content.res.AssetManager;
 import android.os.Environment;
 import android.os.Handler;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.app.Activity;
-
-/*
-import android.content.ContentValues;
-import android.app.ProgressDialog;
-import android.database.Cursor;
 import android.os.Message;
 import android.os.Bundle;
-*/
+import android.app.AlertDialog;
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.ContentValues;
+import android.content.res.AssetManager;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.database.Cursor;
 
 
 /**
  * http://www.comiket.co.jp/cd-rom/
  */
-class ComikeOpenHelper extends SQLiteOpenHelper {
+class ComiketOpenHelper extends SQLiteOpenHelper {
 
-    private static String TAG = "ComikeOpenHelper";
+    private static String TAG = "ComiketOpenHelper";
 
-    private static final String DB="comike.db";
+    private static final String DB="comiket.db";
     public static final String TABLE="rom";
     private static final String CREATE_SQL=
         "CREATE TABLE IF NOT EXISTS "+TABLE+" ("+
@@ -37,7 +36,7 @@ class ComikeOpenHelper extends SQLiteOpenHelper {
         "  x integer,"+
         "  y integer,"+
         "  page integer,"+
-        "  index integer,"+
+        "  cut integer,"+
         "  weekday text,"+
         "  area text,"+
         "  block text,"+
@@ -56,7 +55,24 @@ class ComikeOpenHelper extends SQLiteOpenHelper {
         "DROP TABLE IF EXISTS "+TABLE
         ;
 
-    public ComikeOpenHelper(Context context){
+    File dir;
+
+    void setDir(File dir)
+    {
+        this.dir=dir;
+    }
+
+    File getDir()
+    {
+        return dir;
+    }
+
+    File getCDATA()
+    {
+        return new File(dir, "CDATA");
+    }
+
+    public ComiketOpenHelper(Context context){
         super(context, DB, null, 1);
     }
 
@@ -90,30 +106,12 @@ class ComikeOpenHelper extends SQLiteOpenHelper {
         alertDialog.show();
     }
 
-    /**
-     * /sdcard/Comiketディレクトを見る
-     */
-    public void setup(final Activity context, final Handler onFinish)
-    {
-        java.io.File sdcard=Environment.getExternalStorageDirectory();
-        // show selector
-        java.io.File[] files=sdcard.listFiles();
-        if(files.length==0){
-            message(context,
-                    "データがありません",
-                    "カタログデータをsdcardの/Comiket/C81に配置してください");
-            return;
-        }
-        message(context, "creat data", "create...");
-    }
-
-    /*
     Cursor fetchAll(){
         return getReadableDatabase().query(TABLE, 
                 null, null, null, null, null, null);
     }
 
-    public void setup(final Context context, final Handler onFinish)
+    public void setup(final Activity context, final Handler onFinish)
     {
         Cursor c=fetchAll();
         try{
@@ -129,11 +127,9 @@ class ComikeOpenHelper extends SQLiteOpenHelper {
         final ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setTitle("初期化");
         progressDialog.setMessage("データベース初期化中");
-        progressDialog.setIndeterminate(true);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        //progressDialog.setMax(47);
+        //progressDialog.setIndeterminate(true);
+        //progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setCancelable(false);
-        progressDialog.incrementSecondaryProgressBy(1);
         progressDialog.show();
 
         final Handler handler = new Handler() {
@@ -148,9 +144,20 @@ class ComikeOpenHelper extends SQLiteOpenHelper {
         };
 
         final SQLiteDatabase db=getWritableDatabase();
-        final AssetManager as=context.getResources().getAssets();
 
-        Thread t=new Thread(new Runnable(){
+        File sdcard=Environment.getExternalStorageDirectory();
+        // show selector
+        // /sdcard/Comiket決めうちにする
+        final File[] files=(new File(sdcard, "Comiket")).listFiles();
+        if(files.length==0){
+            message(context,
+                    "データがありません",
+                    "カタログデータをsdcardの/Comiket/C81に配置してください");
+            return;
+        }
+
+        // 読み込み処理
+        final Thread t=new Thread(new Runnable(){
 
             @Override
             public void run(){
@@ -177,25 +184,17 @@ class ComikeOpenHelper extends SQLiteOpenHelper {
             }
 
             private void read(){
-                String[] list;
-                try{
-                    list=as.list("");
-                }
-                catch(java.io.IOException e){
-                    e.printStackTrace();
-                    return;
-                }
-
-                java.util.Arrays.sort(list);
-
                 db.beginTransaction();
                 try{
-                    for(int i=0; i<list.length; ++i){
+                    for(int i=1; i<=3; ++i){
                         try{
-                            String f=list[i];
+                            File f=new File(
+                                    getCDATA(), getDir().getName()+"ROM"+i+".TXT");
                             Log.d(TAG, "open :"+f);
-                            sendMessage(f);
-                            readZipStream(as.open(f));
+                            CSVReader csv=new CSVReader(
+                                    new InputStreamReader(
+                                        new FileInputStream(f), "SJIS"), '\t');
+                            readCSV(csv);
                         }
                         catch(java.io.FileNotFoundException e){
                             // skip directory
@@ -213,28 +212,64 @@ class ComikeOpenHelper extends SQLiteOpenHelper {
                 }
             }
 
-            private void readZipEntry(CSVReader csv)
+            private void readCSV(CSVReader csv)
                 throws java.io.IOException
             {
                 String[] line;
+                ContentValues cv = new ContentValues();
+                String lastBlock="";
                 while ((line = csv.readNext()) != null) {
-                    ContentValues cv = new ContentValues();
-                    cv.put("jis", line[0]);
-                    cv.put("old_zipcode", line[1]);
-                    cv.put("zipcode", line[2]);
-                    cv.put("prefectureKana", line[3]);
-                    cv.put("cityKana", line[4]);
-                    cv.put("townKana", line[5]);
-                    cv.put("prefecture", line[6]);
-                    cv.put("city", line[7]);
-                    cv.put("town", line[8]);
-                    db.insert("zipcode", "", cv);
+                    if(!lastBlock.equals(line[6])){
+                      sendMessage("("+line[4]+")"+line[5]+line[6]);
+                      lastBlock=line[6];
+                    }
+                    cv.clear();
+                    cv.put("x", line[0]);
+                    cv.put("y", line[1]);
+                    cv.put("page", line[2]);
+                    cv.put("cut", line[3]);
+                    cv.put("weekday", line[4]);
+                    cv.put("area", line[5]);
+                    cv.put("block", line[6]);
+                    cv.put("space", line[7]);
+                    cv.put("jenre", line[8]);
+                    cv.put("name", line[9]);
+                    cv.put("kana", line[10]);
+                    cv.put("author", line[11]);
+                    cv.put("publish", line[12]);
+                    cv.put("url", line[13]);
+                    cv.put("email", line[14]);
+                    cv.put("comment", line[15]);
+                    db.insert(TABLE, "", cv);
                 }
             }
         });
 
-        t.start();
+        // build menu...
+        AlertDialog.Builder builder=new 
+            AlertDialog.Builder(context);
+        builder.setTitle("データを読み込むディレクトリを選択してください");
+        String[] dirs=new String[files.length];
+        for(int i=0; i<files.length; ++i){
+            dirs[i]=files[i].getName();
+        }
+        final ComiketOpenHelper helper=this;
+        builder.setItems(dirs, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog,int whichButton) {
+                Log.i(TAG, "selected: "+files[whichButton]);
+                helper.setDir(files[whichButton]);
+                t.start();
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        builder.create();
+        builder.show();
     }
+
+    /*
+    public void setup(final Context context, final Handler onFinish)
+    {
     */
 
 }

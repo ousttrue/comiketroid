@@ -1,4 +1,4 @@
-package jp.ousttrue.comikeroid;
+package jp.ousttrue.comiketroid;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -11,16 +11,16 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 
-public class ComikeProvider extends ContentProvider {
+public class ComiketProvider extends ContentProvider {
 
     public static final Uri CONTENT_URI=Uri.parse(
-        "content://jp.ousttrue.comikeroid.comikeprovider");
+        "content://jp.ousttrue.comiketroid.comiketprovider");
 
-    ComikeOpenHelper databaseHelper;
+    ComiketOpenHelper databaseHelper;
 
     @Override
     public boolean onCreate() {
-        databaseHelper = new ComikeOpenHelper(getContext());
+        databaseHelper = new ComiketOpenHelper(getContext());
         return true;
     }
 
@@ -34,7 +34,7 @@ public class ComikeProvider extends ContentProvider {
             String[] selectionArgs, String sortOrder) {
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-        qb.setTables(ComikeOpenHelper.TABLE);
+        qb.setTables(ComiketOpenHelper.TABLE);
         Cursor c = qb.query(
             db, projection, selection, selectionArgs, null, null, null);
         return c;

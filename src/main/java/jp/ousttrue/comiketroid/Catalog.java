@@ -1,4 +1,4 @@
-package jp.ousttrue.comikeroid;
+package jp.ousttrue.comiketroid;
 
 import android.app.ListActivity;
 import android.os.Bundle;
@@ -47,24 +47,28 @@ public class Catalog extends ListActivity {
 
             SimpleCursorAdapter adapter = 
               new SimpleCursorAdapter(getApplicationContext(), R.layout.row,
-                managedQuery(ComikeProvider.CONTENT_URI,
+                managedQuery(ComiketProvider.CONTENT_URI,
                   //null, "prefecture=?", selectParams, null),
-                  null, "weekday=?", selectParams, null),
+                  null, null, null, null),
                 new String[]{
                   "weekday", 
                   "area", 
                   "block", 
-                  "space"},
+                  "space",
+                  "name"
+                },
                 new int[]{
                   R.id.weekday, 
                   R.id.area,
                   R.id.block,
-                  R.id.space});
+                  R.id.space,
+                  R.id.name,
+                });
             setListAdapter(adapter);
           }
         };
 
-        ComikeOpenHelper helper=new ComikeOpenHelper(getApplicationContext());
+        ComiketOpenHelper helper=new ComiketOpenHelper(getApplicationContext());
         helper.setup(this, handler);
     }
 }
