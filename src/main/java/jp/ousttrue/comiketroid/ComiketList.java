@@ -59,11 +59,11 @@ public class ComiketList extends ListActivity {
                   "name"
                 },
                 new int[]{
-                  R.id.weekday, 
-                  R.id.area,
-                  R.id.block,
-                  R.id.space,
-                  R.id.name,
+                  R.id.lweekday, 
+                  R.id.larea,
+                  R.id.lblock,
+                  R.id.lspace,
+                  R.id.lname,
                 });
             setListAdapter(adapter);
 

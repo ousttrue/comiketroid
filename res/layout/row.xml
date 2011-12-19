@@ -5,32 +5,32 @@
   android:layout_height="fill_parent"
   >
   <TextView  
-    android:id="@+id/weekday" 
+    android:id="@+id/lweekday" 
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:textSize="15pt"
     />
   <TextView  
-    android:id="@+id/area" 
+    android:id="@+id/larea" 
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:textSize="15pt"
     android:paddingLeft="10.0px"
     />
   <TextView  
-    android:id="@+id/block" 
+    android:id="@+id/lblock" 
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:textSize="15pt"
     />
   <TextView  
-    android:id="@+id/space" 
+    android:id="@+id/lspace" 
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:textSize="15pt"
     />
   <TextView  
-    android:id="@+id/name" 
+    android:id="@+id/lname" 
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:textSize="15pt"
