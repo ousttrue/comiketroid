@@ -6,7 +6,7 @@
     <provider android:name="ComiketProvider" 
       android:authorities="jp.ousttrue.comiketroid.comiketprovider" />
 
-    <activity android:name=".Catalog">
+    <activity android:name=".ComiketList">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
@@ -14,10 +14,17 @@
       <intent-filter>
           <action android:name="android.intent.action.VIEW" />
           <category android:name="android.intent.category.DEFAULT" />
-          <data android:scheme="comiket"/>
+          <data android:scheme="comiket" android:mimeType="text/directory" />
+      </intent-filter>
+    </activity>
+
+    <activity android:name=".ComiketItem">
+      <intent-filter>
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <data android:scheme="comiket" android:mimeType="text/item" />
       </intent-filter>
     </activity>
   </application>
 
 </manifest>
-

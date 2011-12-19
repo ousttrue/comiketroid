@@ -14,9 +14,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.Cursor;
 
 
-public class Catalog extends ListActivity {
+public class ComiketList extends ListActivity {
 
-    private static String TAG = "Catalog";
+    private static String TAG = "ComiketList";
 
     /**
      * Called when the activity is first created.
@@ -75,7 +75,9 @@ public class Catalog extends ListActivity {
                   {
                     Log.i(TAG, "onItemClick: "+id);
                     Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse("comiket://81/" + id));
+                    intent.setDataAndType(
+                      Uri.parse("comiket://81/" + id),
+                      "text/item");
                     startActivity(intent);
                   }
             });
