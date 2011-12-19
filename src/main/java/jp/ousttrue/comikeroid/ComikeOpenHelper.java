@@ -9,6 +9,9 @@ import android.util.Log;
 import android.content.res.AssetManager;
 import android.os.Environment;
 import android.os.Handler;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.app.Activity;
 
 /*
 import android.content.ContentValues;
@@ -69,13 +72,39 @@ class ComikeOpenHelper extends SQLiteOpenHelper {
         db.execSQL(DROP_SQL);
     }
 
+    private void message(final Activity context, 
+            final String title, final String message)
+    {
+        AlertDialog.Builder alertDialog=new 
+            AlertDialog.Builder(context);
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(message);
+        alertDialog.setPositiveButton("OK",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog,int whichButton) {
+                        context.setResult(Activity.RESULT_OK);
+                    }
+                });
+        alertDialog.create();
+        alertDialog.show();
+    }
+
     /**
      * /sdcard/Comiketディレクトを見る
      */
-    public void setup(final Context context, final Handler onFinish)
+    public void setup(final Activity context, final Handler onFinish)
     {
         java.io.File sdcard=Environment.getExternalStorageDirectory();
         // show selector
+        java.io.File[] files=sdcard.listFiles();
+        if(files.length==0){
+            message(context,
+                    "データがありません",
+                    "カタログデータをsdcardの/Comiket/C81に配置してください");
+            return;
+        }
+        message(context, "creat data", "create...");
     }
 
     /*
