@@ -210,9 +210,9 @@ class ComiketOpenHelper extends SQLiteOpenHelper {
                         }
                     }
                     db.setTransactionSuccessful();
+                    db.endTransaction();
                 }
                 finally{
-                    db.endTransaction();
                     helper.close();
                     Log.i(TAG, "closed");
                 }

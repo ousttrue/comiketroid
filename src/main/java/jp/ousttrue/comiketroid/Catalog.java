@@ -1,16 +1,17 @@
 package jp.ousttrue.comiketroid;
 
-import android.app.ListActivity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.app.ListActivity;
+import android.net.Uri;
+import android.content.Intent;
+import android.view.View;
+import android.widget.SimpleCursorAdapter;
+import android.widget.AdapterView;
 import android.util.Log;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.Cursor;
-import android.view.View;
-import android.widget.SimpleCursorAdapter;
-import android.os.Handler;
-import android.os.Message;
-import android.net.Uri;
-import android.content.Intent;
 
 
 public class Catalog extends ListActivity {
@@ -70,6 +71,17 @@ public class Catalog extends ListActivity {
 
         ComiketOpenHelper helper=new ComiketOpenHelper(getApplicationContext());
         helper.setup(this, handler);
+
+        getListView().setOnItemClickListener(
+            new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(
+                AdapterView<?> adapter, View view, int position, long id)
+            {
+              Log.i(TAG, "onItemClick: "+id);
+            }
+        });
+
     }
 }
 
