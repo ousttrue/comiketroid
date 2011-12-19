@@ -208,6 +208,8 @@ class ComiketOpenHelper extends SQLiteOpenHelper {
                             e.printStackTrace();
                             return;
                         }
+                        // debug...
+                        break;
                     }
                     db.setTransactionSuccessful();
                     db.endTransaction();

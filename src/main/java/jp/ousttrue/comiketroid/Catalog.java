@@ -35,22 +35,22 @@ public class Catalog extends ListActivity {
           public void handleMessage(Message msg) {
             Log.d(TAG, "setAdapterHandler: ");
 
-            String[] selectParams;
             Intent intent = getIntent();
-            selectParams=new String[]{ "" };
-            /*
+            String selectParams;
+            String[] selectArgs;
             if (intent.getData() == null) {
-              selectParams=new String[]{ "" };
+              selectParams=null;
+              selectArgs=null;
             } else {
-              selectParams=new String[]{ ((Uri)intent.getData()).getHost() };
+              selectParams="_id=?";
+              selectArgs=new String[]{ 
+                ((Uri)intent.getData()).getPath().substring(1) };
             }
-            */
 
-            SimpleCursorAdapter adapter = 
+            final SimpleCursorAdapter adapter = 
               new SimpleCursorAdapter(getApplicationContext(), R.layout.row,
                 managedQuery(ComiketProvider.CONTENT_URI,
-                  //null, "prefecture=?", selectParams, null),
-                  null, null, null, null),
+                  null, selectParams, selectArgs, null),
                 new String[]{
                   "weekday", 
                   "area", 
@@ -66,22 +66,24 @@ public class Catalog extends ListActivity {
                   R.id.name,
                 });
             setListAdapter(adapter);
+
+            getListView().setOnItemClickListener(
+                new AdapterView.OnItemClickListener(){
+                  @Override
+                  public void onItemClick(
+                    AdapterView<?> _, View view, int position, long id)
+                  {
+                    Log.i(TAG, "onItemClick: "+id);
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse("comiket://81/" + id));
+                    startActivity(intent);
+                  }
+            });
           }
         };
 
         ComiketOpenHelper helper=new ComiketOpenHelper(getApplicationContext());
         helper.setup(this, handler);
-
-        getListView().setOnItemClickListener(
-            new AdapterView.OnItemClickListener(){
-            @Override
-            public void onItemClick(
-                AdapterView<?> adapter, View view, int position, long id)
-            {
-              Log.i(TAG, "onItemClick: "+id);
-            }
-        });
-
     }
 }
 
