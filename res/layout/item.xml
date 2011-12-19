@@ -46,22 +46,22 @@
           />
       </LinearLayout>
       <TextView
-        android:id="@+id/name"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textSize="15pt"
-        />
-      <TextView
         android:id="@+id/kana"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textSize="15pt"
+        android:textSize="10pt"
+        />
+      <TextView
+        android:id="@+id/name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="12pt"
         />
       <TextView
         android:id="@+id/author"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textSize="15pt"
+        android:textSize="12pt"
         />
     </LinearLayout>
     <ImageView
@@ -76,24 +76,32 @@
     android:id="@+id/publish"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:textSize="15pt"
+    android:textSize="12pt"
     />
   <Button
     android:id="@+id/url"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:textSize="15pt"
+    android:textSize="12pt"
     />
+  <!--
   <TextView
     android:id="@+id/email"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:textSize="15pt"
     />
-  <TextView
-    android:id="@+id/comment"
+  -->
+  <ScrollView  
+    android:id="@+id/ScrollView"  
+    android:layout_height="0dip"  
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:textSize="10pt"
-    />
+    android:layout_weight="1">
+    <TextView
+      android:id="@+id/comment"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:textSize="10pt"
+      />
+  </ScrollView>
 </LinearLayout>

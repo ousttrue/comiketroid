@@ -75,7 +75,7 @@ public class ComiketItem extends Activity {
     ((TextView)findViewById(R.id.author)).setText(cursor.getString(11));
     ((TextView)findViewById(R.id.publish)).setText(cursor.getString(12));
     ((TextView)findViewById(R.id.url)).setText(cursor.getString(13));
-    ((TextView)findViewById(R.id.email)).setText(cursor.getString(14));
+    //((TextView)findViewById(R.id.email)).setText(cursor.getString(14));
     ((TextView)findViewById(R.id.comment)).setText(cursor.getString(15));
 
     File sdcard=Environment.getExternalStorageDirectory();
