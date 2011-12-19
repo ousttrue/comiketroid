@@ -113,6 +113,8 @@ class ComiketOpenHelper extends SQLiteOpenHelper {
 
     public void setup(final Activity context, final Handler onFinish)
     {
+        final ComiketOpenHelper helper=this;
+
         Cursor c=fetchAll();
         try{
             if(c.moveToFirst()){
@@ -122,6 +124,8 @@ class ComiketOpenHelper extends SQLiteOpenHelper {
         }
         finally{
             c.close();
+            close();
+            Log.i(TAG, "closed");
         }
 
         final ProgressDialog progressDialog = new ProgressDialog(context);
@@ -209,6 +213,8 @@ class ComiketOpenHelper extends SQLiteOpenHelper {
                 }
                 finally{
                     db.endTransaction();
+                    helper.close();
+                    Log.i(TAG, "closed");
                 }
             }
 
@@ -253,7 +259,6 @@ class ComiketOpenHelper extends SQLiteOpenHelper {
         for(int i=0; i<files.length; ++i){
             dirs[i]=files[i].getName();
         }
-        final ComiketOpenHelper helper=this;
         builder.setItems(dirs, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog,int whichButton) {
