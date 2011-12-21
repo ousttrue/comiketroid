@@ -31,7 +31,7 @@ class CursorBindingTouchListener implements View.OnTouchListener {
     "area",
     "block",
     "space",
-    "jenre",
+    "genre",
     "name", // 10
     "kana",
     "author",
@@ -40,6 +40,10 @@ class CursorBindingTouchListener implements View.OnTouchListener {
     "email", // 15
     "comment",
   };
+  String getWeekday(){ return cursor.getString(5); }
+  String getArea(){ return cursor.getString(6); }
+  String getBlock(){ return cursor.getString(7); }
+  int getSpace(){ return cursor.getInt(8); }
 
   Activity activity;
   ViewFlipper viewFlipper;
@@ -48,6 +52,7 @@ class CursorBindingTouchListener implements View.OnTouchListener {
   int id;
   Cursor cursor;
   View[] views={null, null, null};
+  ComiketDef def;
 
   CursorBindingTouchListener(Activity activity, ViewFlipper viewFlipper, int id){
     this.activity=activity;
@@ -55,6 +60,7 @@ class CursorBindingTouchListener implements View.OnTouchListener {
     this.id=id;
     this.firstTouch=0.0f;
     this.isFlipping=false;
+    this.def=new ComiketDef();
 
     // create views
     for(int i=0; i<this.views.length; ++i){
@@ -98,10 +104,8 @@ class CursorBindingTouchListener implements View.OnTouchListener {
   }
 
   private void bindView(View view) {
-    ((TextView)view.findViewById(R.id.weekday)).setText(cursor.getString(5));
-    ((TextView)view.findViewById(R.id.area)).setText(cursor.getString(6));
-    ((TextView)view.findViewById(R.id.block)).setText(cursor.getString(7));
-    ((TextView)view.findViewById(R.id.space)).setText(cursor.getString(8));
+    ((TextView)view.findViewById(R.id.genre)).setText(
+    cursor.getString(9)+":"+def.getGenre(cursor.getInt(9)));
     ((TextView)view.findViewById(R.id.name)).setText(cursor.getString(10));
     ((TextView)view.findViewById(R.id.kana)).setText(cursor.getString(11));
     ((TextView)view.findViewById(R.id.author)).setText(cursor.getString(12));
@@ -151,8 +155,14 @@ class CursorBindingTouchListener implements View.OnTouchListener {
   }
 
   private void updateTitle(){
-    activity.setTitle(String.format("%d/%d", 
-          cursor.getPosition()+1, cursor.getCount()));
+    activity.setTitle(String.format("%s %s%s%d(%d/%d)", 
+          def.getDate(getWeekday()),
+          def.getAreaName(getBlock()),
+          getBlock(),
+          getSpace(),
+          cursor.getPosition()+1, 
+          cursor.getCount()
+          ));
   }
 
   @Override
@@ -211,6 +221,4 @@ class CursorBindingTouchListener implements View.OnTouchListener {
     }
   }
 }
-
-
 

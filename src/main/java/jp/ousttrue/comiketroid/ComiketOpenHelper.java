@@ -41,7 +41,7 @@ class ComiketOpenHelper extends SQLiteOpenHelper {
         "  area text,"+
         "  block text,"+
         "  space integer,"+
-        "  jenre integer,"+
+        "  genre integer,"+
         "  name text,"+
         "  kana text,"+
         "  author text,"+
@@ -244,7 +244,7 @@ class ComiketOpenHelper extends SQLiteOpenHelper {
                     cv.put("area", line[5]);
                     cv.put("block", line[6]);
                     cv.put("space", line[7]);
-                    cv.put("jenre", line[8]);
+                    cv.put("genre", line[8]);
                     cv.put("name", line[9]);
                     cv.put("kana", line[10]);
                     cv.put("author", line[11]);

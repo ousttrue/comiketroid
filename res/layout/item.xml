@@ -16,35 +16,11 @@
       android:layout_weight="1"
       >
       <TextView
-        android:id="@+id/weekday"
+        android:id="@+id/genre"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textSize="15pt"
+        android:textSize="12pt"
         />
-      <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        >
-        <TextView
-          android:id="@+id/area"
-          android:layout_width="wrap_content"
-          android:layout_height="fill_parent"
-          android:textSize="15pt"
-          />
-        <TextView
-          android:id="@+id/block"
-          android:layout_width="wrap_content"
-          android:layout_height="fill_parent"
-          android:textSize="15pt"
-          />
-        <TextView
-          android:id="@+id/space"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:textSize="15pt"
-          />
-      </LinearLayout>
       <TextView
         android:id="@+id/kana"
         android:layout_width="fill_parent"
@@ -63,6 +39,12 @@
         android:layout_height="wrap_content"
         android:textSize="12pt"
         />
+      <TextView
+        android:id="@+id/publish"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="12pt"
+        />
     </LinearLayout>
     <ImageView
       android:id="@+id/cut"
@@ -72,17 +54,11 @@
       android:layout_weight="1"
       />
   </LinearLayout>
-  <TextView
-    android:id="@+id/publish"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:textSize="12pt"
-    />
   <Button
     android:id="@+id/url"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:textSize="12pt"
+    android:textSize="10pt"
     />
   <!--
   <TextView
