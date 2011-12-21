@@ -229,6 +229,10 @@ class ComiketOpenHelper extends SQLiteOpenHelper {
                 while ((line = csv.readNext()) != null) {
                     if(!lastBlock.equals(line[6])){
                       sendMessage("("+line[4]+")"+line[5]+line[6]);
+                      if(!"".equals(lastBlock)){
+                        // debug...
+                        break;
+                      }
                       lastBlock=line[6];
                     }
                     cv.clear();
