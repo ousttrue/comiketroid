@@ -64,6 +64,7 @@ class CursorBindingTouchListener implements View.OnTouchListener {
       views[i]=view;
     }
 
+    // find cursor position
     this.cursor=activity.managedQuery(ComiketProvider.CONTENT_URI,
         projection, null, null, null);
     if(this.cursor.getCount()==0){
@@ -81,11 +82,13 @@ class CursorBindingTouchListener implements View.OnTouchListener {
       return;
     }
 
+    // binding
     if(!cursor.isFirst()){
       cursor.moveToPrevious();
       bindView(views[2]);
       cursor.moveToNext();
     }
+    updateTitle();
     bindView(views[0]);
     if(!cursor.isLast()){
       cursor.moveToNext();
@@ -147,6 +150,11 @@ class CursorBindingTouchListener implements View.OnTouchListener {
     return getView(viewFlipper.getDisplayedChild()-1);
   }
 
+  private void updateTitle(){
+    activity.setTitle(String.format("%d/%d", 
+          cursor.getPosition()+1, cursor.getCount()));
+  }
+
   @Override
   public boolean onTouch(View v, MotionEvent event) {
     int x = (int)event.getRawX();
@@ -165,13 +173,14 @@ class CursorBindingTouchListener implements View.OnTouchListener {
                 AnimationUtils.loadAnimation(activity, R.anim.move_right_outgoing));
 
             cursor.moveToPrevious();
+            updateTitle();
+            viewFlipper.showPrevious();
             // 先読み
             if(!cursor.isFirst()){
               cursor.moveToPrevious();
-              bindView(getRelativeView(-2));
+              bindView(getPreviousView());
               cursor.moveToNext();
             }
-            viewFlipper.showPrevious();
           }
           else if(x - firstTouch < -50 && !cursor.isLast()) {
             isFlipping=true;
@@ -181,15 +190,14 @@ class CursorBindingTouchListener implements View.OnTouchListener {
                 AnimationUtils.loadAnimation(activity, R.anim.move_left_outgoing));
 
             cursor.moveToNext();
+            updateTitle();
+            viewFlipper.showNext();
             // 先読み
             if(!cursor.isLast()){
               cursor.moveToNext();
-              bindView(getRelativeView(2));
+              bindView(getNextView());
               cursor.moveToPrevious();
             }
-            Log.d(TAG, "before: "+viewFlipper.getDisplayedChild());
-            viewFlipper.showNext();
-            Log.d(TAG, "after: "+viewFlipper.getDisplayedChild());
           }
         }
         return false;
