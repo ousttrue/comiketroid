@@ -1,6 +1,7 @@
 package jp.ousttrue.comiketroid;
 
 import java.util.Map;
+import java.util.ArrayList;
 import android.os.Bundle;
 import android.content.Context;
 import android.app.Activity;
@@ -20,6 +21,7 @@ public class ComiketFilter extends Activity {
 
   private static final String TAG = "ComiketItem";
   private ComiketDef def=new ComiketDef("C81");
+  private ArrayList<View> areas;
 
   /**
    * Called when the activity is first created.
@@ -40,19 +42,27 @@ public class ComiketFilter extends Activity {
     ViewGroup days=(ViewGroup)ViewGroup.inflate(this, R.layout.filtersub, null);
     ((TextView)days.findViewById(R.id.label)).setText("開催日");
     filter.addView(days);
+    boolean isFirst=true;
     for(Map.Entry<String, String> e: def.dateMap.entrySet()) {
       addButton((ViewGroup)days.findViewById(R.id.buttons), 
-          e.getKey());
+          e.getKey(),
+          isFirst);
+      isFirst=false;
     }
     // 場所
+    areas=new ArrayList<View>();
+    isFirst=true;
     for(Map.Entry<String, String> e: def.areaMap.entrySet()) {
       ViewGroup area=(ViewGroup)ViewGroup.inflate(this, R.layout.filtersub, null);
       ((TextView)area.findViewById(R.id.label)).setText(e.getKey());
       filter.addView(area);
+      areas.add(area.findViewById(R.id.buttons));
       String value=e.getValue();
       for(int i=0; i<value.length(); ++i){
         addButton((ViewGroup)area.findViewById(R.id.buttons), 
-            value.substring(i, i+1));
+            value.substring(i, i+1),
+            isFirst && i==0);
+        isFirst=false;
       }
     }
     // OK
@@ -80,19 +90,41 @@ public class ComiketFilter extends Activity {
   }
 
   private String getBlock(){
-    return "Ｂ";
+    StringBuffer buf=new StringBuffer();
+    boolean isAll=true;
+    for(View v: areas){
+      ViewGroup g=(ViewGroup)v;
+      for(int i=0; i<g.getChildCount(); ++i){
+        ToggleButton b=(ToggleButton)g.getChildAt(i);
+        if(b.isChecked()){
+          if(buf.length()>0){
+            buf.append(",");
+          }
+          buf.append(b.getText());
+        }
+        else{
+          isAll=false;
+        }
+      }
+    }
+    if(isAll){
+      return "*";
+    }
+    else{
+      return buf.toString();
+    }
   }
 
   private String getGenre(){
     return "*";
   }
 
-  private void addButton(ViewGroup g, String text){
+  private void addButton(ViewGroup g, String text, boolean checked){
     ToggleButton button=new ToggleButton(this);
     button.setText(text);
     button.setTextOn(text);
     button.setTextOff(text);
-    button.setChecked(true);
+    button.setChecked(checked);
     RelativeLayout.LayoutParams prm = new RelativeLayout.LayoutParams(
         LinearLayout.LayoutParams.WRAP_CONTENT,
         LinearLayout.LayoutParams.WRAP_CONTENT);
