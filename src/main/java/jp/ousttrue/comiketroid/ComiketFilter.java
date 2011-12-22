@@ -80,7 +80,7 @@ public class ComiketFilter extends Activity {
   }
 
   private String getBlock(){
-    return "*";
+    return "Ｂ";
   }
 
   private String getGenre(){
