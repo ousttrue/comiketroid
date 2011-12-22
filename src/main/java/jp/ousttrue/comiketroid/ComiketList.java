@@ -48,14 +48,16 @@ class SetAdapterHandler extends Handler {
     Intent intent = listActivity.getIntent();
     String selectParams;
     String[] selectArgs;
-    if (intent.getData() == null) {
+    //if (intent.getData() == null) {
       selectParams=null;
       selectArgs=null;
+    /*
     } else {
       selectParams="_id=?";
       selectArgs=new String[]{ 
         ((Uri)intent.getData()).getPath().substring(1) };
     }
+    */
 
     Cursor cursor=listActivity.managedQuery(
             ComiketProvider.CONTENT_URI,
