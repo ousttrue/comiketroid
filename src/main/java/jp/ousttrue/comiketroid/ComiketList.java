@@ -14,30 +14,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.Cursor;
 
 
-class OnClickSendIntent implements AdapterView.OnItemClickListener {
-  private static String TAG = "OnClickSendIntent";
-
-  final ListActivity listActivity;
-
-  OnClickSendIntent(ListActivity listActivity)
-  {
-    this.listActivity=listActivity;
-  }
-
-  @Override
-  public void onItemClick(
-      AdapterView<?> _, View view, int position, long id)
-  {
-    Log.i(TAG, "onItemClick: "+id);
-    Intent intent = new Intent(Intent.ACTION_VIEW);
-    intent.setDataAndType(
-        Uri.parse("comiket://81/" + id),
-        "text/item");
-    listActivity.startActivity(intent);
-  }
-}
-
-
 public class ComiketList extends ListActivity {
 
   private static String TAG = "ComiketList";
@@ -78,7 +54,19 @@ public class ComiketList extends ListActivity {
       }
     });
         
-    getListView().setOnItemClickListener(new OnClickSendIntent(this));
+    getListView().setOnItemClickListener(new AdapterView.OnItemClickListener(){
+      @Override
+      public void onItemClick(
+        AdapterView<?> _, View view, int position, long id)
+      {
+        Log.i(TAG, "onItemClick: "+id);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(
+          Uri.parse("comiket://81/" + id),
+          "text/item");
+        listActivity.startActivity(intent);
+      }
+    });
   }
 
   static void setListAdapter(ListActivity listActivity){
