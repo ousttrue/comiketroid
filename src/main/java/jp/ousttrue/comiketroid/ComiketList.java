@@ -45,15 +45,7 @@ public class ComiketList extends ListActivity {
     super.onCreate(savedInstanceState);
     Log.i(TAG, "onCreate");
 
-    ComiketOpenHelper helper=new ComiketOpenHelper(getApplicationContext());
     final ListActivity listActivity=this;
-    helper.setup(this, new Handler(){
-      @Override
-      public void handleMessage(Message msg) {
-        ComiketList.setListAdapter(listActivity);
-      }
-    });
-        
     getListView().setOnItemClickListener(new AdapterView.OnItemClickListener(){
       @Override
       public void onItemClick(
@@ -65,6 +57,21 @@ public class ComiketList extends ListActivity {
           Uri.parse("comiket://81/" + id),
           "text/item");
         listActivity.startActivity(intent);
+      }
+    });
+
+    ComiketOpenHelper helper=new ComiketOpenHelper(getApplicationContext());
+    if(helper.fetchAll().getCount()==0){
+      Log.i(TAG, "closed");
+      helper.close();
+      ComiketList.setListAdapter(this);
+      return;
+    }
+
+    helper.setup(this, new Handler(){
+      @Override
+      public void handleMessage(Message msg) {
+        ComiketList.setListAdapter(listActivity);
       }
     });
   }

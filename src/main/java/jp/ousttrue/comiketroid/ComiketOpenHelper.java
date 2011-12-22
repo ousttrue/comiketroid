@@ -114,20 +114,6 @@ class ComiketOpenHelper extends SQLiteOpenHelper {
     public void setup(final Activity context, final Handler onFinish)
     {
         final ComiketOpenHelper helper=this;
-
-        Cursor c=fetchAll();
-        try{
-            if(c.moveToFirst()){
-                onFinish.sendEmptyMessage(0);
-                return;
-            }
-        }
-        finally{
-            c.close();
-            close();
-            Log.i(TAG, "closed");
-        }
-
         final ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setTitle("初期化");
         progressDialog.setMessage("データベース初期化中");
@@ -277,11 +263,6 @@ class ComiketOpenHelper extends SQLiteOpenHelper {
         builder.create();
         builder.show();
     }
-
-    /*
-    public void setup(final Context context, final Handler onFinish)
-    {
-    */
 
 }
 
