@@ -88,15 +88,5 @@ class ComiketOpenHelper extends SQLiteOpenHelper {
                 null, null, null, null, null, null);
     }
 
-    public void setup(Activity context, Handler onFinish)
-    {
-        // /sdcard/Comiket/C81に決めうちにする
-        File sdcard=Environment.getExternalStorageDirectory();
-
-        // 読み込み処理
-        final Thread t=new Thread(new Logic(context, this, onFinish,
-              new File(sdcard, String.format("Comiket/"+name))));
-        t.start();
-    }
 }
 

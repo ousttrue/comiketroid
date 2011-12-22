@@ -20,7 +20,7 @@ public class ComiketProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        databaseHelper = new ComiketOpenHelper(getContext());
+        databaseHelper = new ComiketOpenHelper(getContext(), "C81");
         return true;
     }
 

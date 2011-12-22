@@ -60,21 +60,18 @@ public class ComiketList extends ListActivity {
       }
     });
 
-    ComiketOpenHelper helper=new ComiketOpenHelper(
-        getApplicationContext(), "C81");
-    if(helper.fetchAll().getCount()==0){
-      Log.i(TAG, "closed");
-      helper.close();
-      ComiketList.setListAdapter(this);
-      return;
+    if(managedQuery(ComiketProvider.CONTENT_URI,
+          null, null, null, null).getCount()>0)
+    {
+      Log.i(TAG, "already exists....");
+      setListAdapter(this);
     }
+    else{
+      Log.i(TAG, "initialize...");
 
-    helper.setup(this, new Handler(){
-      @Override
-      public void handleMessage(Message msg) {
-        ComiketList.setListAdapter(listActivity);
-      }
-    });
+      ComiketSetupTask task = new ComiketSetupTask(this, "C81");
+      task.execute();
+    }
   }
 
   static void setListAdapter(ListActivity listActivity){
