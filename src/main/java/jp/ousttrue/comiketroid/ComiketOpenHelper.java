@@ -111,30 +111,34 @@ class ComiketOpenHelper extends SQLiteOpenHelper {
                 null, null, null, null, null, null);
     }
 
+    private ProgressDialog createProgressDialog(Activity context)
+    {
+      final ProgressDialog progressDialog = new ProgressDialog(context);
+      progressDialog.setTitle("初期化");
+      progressDialog.setMessage("データベース初期化中");
+      //progressDialog.setIndeterminate(true);
+      //progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+      progressDialog.setCancelable(false);
+      progressDialog.show();
+      return progressDialog;
+    }
+
     public void setup(final Activity context, final Handler onFinish)
     {
         final ComiketOpenHelper helper=this;
-        final ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.setTitle("初期化");
-        progressDialog.setMessage("データベース初期化中");
-        //progressDialog.setIndeterminate(true);
-        //progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                String progressMessaage=(String)msg.getData().get(
-                        "progressMessaage").toString();
-                progressDialog.setMessage(progressMessaage);
-                Log.d(TAG, "handleMessage: "+progressMessaage);
-                Thread.yield();
-            }
-        };
-
         final SQLiteDatabase db=getWritableDatabase();
 
+        final ProgressDialog progressDialog=createProgressDialog(context);
+        final Handler handler = new Handler() {
+          @Override
+          public void handleMessage(Message msg) {
+            String progressMessaage=(String)msg.getData().get(
+                "progressMessaage").toString();
+            progressDialog.setMessage(progressMessaage);
+            Log.d(TAG, "handleMessage: "+progressMessaage);
+            Thread.yield();
+          }
+        };
         File sdcard=Environment.getExternalStorageDirectory();
         // show selector
         // /sdcard/Comiket決めうちにする
