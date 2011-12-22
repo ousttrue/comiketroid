@@ -14,13 +14,34 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.Cursor;
 
 
-/**
- * should call on setup is finished
- */
-class SetAdapterHandler extends Handler {
-  private static String TAG = "SetAdapterHandler";
+class OnClickSendIntent implements AdapterView.OnItemClickListener {
+  private static String TAG = "OnClickSendIntent";
 
   final ListActivity listActivity;
+
+  OnClickSendIntent(ListActivity listActivity)
+  {
+    this.listActivity=listActivity;
+  }
+
+  @Override
+  public void onItemClick(
+      AdapterView<?> _, View view, int position, long id)
+  {
+    Log.i(TAG, "onItemClick: "+id);
+    Intent intent = new Intent(Intent.ACTION_VIEW);
+    intent.setDataAndType(
+        Uri.parse("comiket://81/" + id),
+        "text/item");
+    listActivity.startActivity(intent);
+  }
+}
+
+
+public class ComiketList extends ListActivity {
+
+  private static String TAG = "ComiketList";
+
   static final String[] fields={
     "weekday", 
     "area", 
@@ -36,15 +57,32 @@ class SetAdapterHandler extends Handler {
     R.id.lname,
   };
 
-  SetAdapterHandler(ListActivity listActivity)
-  {
-    this.listActivity=listActivity;
+  /**
+   * Called when the activity is first created.
+   * @param savedInstanceState If the activity is being re-initialized after
+   * previously being shut down then this Bundle contains the data it most
+   * recently supplied in onSaveInstanceState(Bundle). 
+   * <b>Note: Otherwise it is null.</b>
+   */
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    Log.i(TAG, "onCreate");
+
+    ComiketOpenHelper helper=new ComiketOpenHelper(getApplicationContext());
+    final ListActivity listActivity=this;
+    helper.setup(this, new Handler(){
+      @Override
+      public void handleMessage(Message msg) {
+        ComiketList.setListAdapter(listActivity);
+      }
+    });
+        
+    getListView().setOnItemClickListener(new OnClickSendIntent(this));
   }
 
-  @Override
-  public void handleMessage(Message msg) {
+  static void setListAdapter(ListActivity listActivity){
     Log.d(TAG, "setAdapterHandler: ");
-
     Intent intent = listActivity.getIntent();
     Uri uri=intent.getData();
     Log.i(TAG, uri.toString());
@@ -74,54 +112,6 @@ class SetAdapterHandler extends Handler {
         views
         );
     listActivity.setListAdapter(adapter);
-  }
-}
-
-
-class OnClickSendIntent implements AdapterView.OnItemClickListener {
-  private static String TAG = "OnClickSendIntent";
-
-  final ListActivity listActivity;
-
-  OnClickSendIntent(ListActivity listActivity)
-  {
-    this.listActivity=listActivity;
-  }
-
-  @Override
-  public void onItemClick(
-      AdapterView<?> _, View view, int position, long id)
-  {
-    Log.i(TAG, "onItemClick: "+id);
-    Intent intent = new Intent(Intent.ACTION_VIEW);
-    intent.setDataAndType(
-        Uri.parse("comiket://81/" + id),
-        "text/item");
-    listActivity.startActivity(intent);
-  }
-}
-
-
-public class ComiketList extends ListActivity {
-
-  private static String TAG = "ComiketList";
-
-  /**
-   * Called when the activity is first created.
-   * @param savedInstanceState If the activity is being re-initialized after
-   * previously being shut down then this Bundle contains the data it most
-   * recently supplied in onSaveInstanceState(Bundle). 
-   * <b>Note: Otherwise it is null.</b>
-   */
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    Log.i(TAG, "onCreate");
-
-    ComiketOpenHelper helper=new ComiketOpenHelper(getApplicationContext());
-    helper.setup(this, new SetAdapterHandler(this));
-
-    getListView().setOnItemClickListener(new OnClickSendIntent(this));
   }
 }
 

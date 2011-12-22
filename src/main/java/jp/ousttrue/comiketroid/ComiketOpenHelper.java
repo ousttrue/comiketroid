@@ -209,7 +209,7 @@ class ComiketOpenHelper extends SQLiteOpenHelper {
                             return;
                         }
                         // debug...
-                        break;
+                        //break;
                     }
                     db.setTransactionSuccessful();
                     db.endTransaction();
@@ -231,7 +231,7 @@ class ComiketOpenHelper extends SQLiteOpenHelper {
                       sendMessage("("+line[4]+")"+line[5]+line[6]);
                       if(!"".equals(lastBlock)){
                         // debug...
-                        break;
+                        //break;
                       }
                       lastBlock=line[6];
                     }
