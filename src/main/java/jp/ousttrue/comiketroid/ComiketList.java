@@ -45,6 +45,10 @@ public class ComiketList extends ListActivity {
     super.onCreate(savedInstanceState);
     Log.i(TAG, "onCreate");
 
+    Intent intent = getIntent();
+    final Uri uri=intent.getData();
+    Log.i(TAG, uri.toString());
+
     final ListActivity listActivity=this;
     getListView().setOnItemClickListener(new AdapterView.OnItemClickListener(){
       @Override
@@ -54,7 +58,7 @@ public class ComiketList extends ListActivity {
         Log.i(TAG, "onItemClick: "+id);
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(
-          Uri.parse("comiket://81/" + id),
+          Uri.parse(uri.toString()+"/"+id), 
           "text/item");
         listActivity.startActivity(intent);
       }
@@ -69,7 +73,7 @@ public class ComiketList extends ListActivity {
     else{
       Log.i(TAG, "initialize...");
 
-      ComiketSetupTask task = new ComiketSetupTask(this, "C81");
+      ComiketSetupTask task = new ComiketSetupTask(this, uri.getHost());
       task.execute();
     }
   }

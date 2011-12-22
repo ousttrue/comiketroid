@@ -19,7 +19,7 @@ import android.content.Intent;
 public class ComiketFilter extends Activity {
 
   private static final String TAG = "ComiketItem";
-  private ComiketDef def=new ComiketDef();
+  private ComiketDef def=new ComiketDef("C81");
 
   /**
    * Called when the activity is first created.
@@ -63,7 +63,8 @@ public class ComiketFilter extends Activity {
         Log.i(TAG, "onClick");
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(
-          Uri.parse(String.format("comiket://81/%s/%s/%s",
+          Uri.parse(String.format("comiket://%s/%s/%s/%s",
+              def.getName(),
               getDate(),
               getBlock(),
               getGenre()

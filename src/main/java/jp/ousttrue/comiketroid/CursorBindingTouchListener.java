@@ -60,7 +60,7 @@ class CursorBindingTouchListener implements View.OnTouchListener {
     this.id=id;
     this.firstTouch=0.0f;
     this.isFlipping=false;
-    this.def=new ComiketDef();
+    this.def=new ComiketDef("C81");
 
     // create views
     for(int i=0; i<this.views.length; ++i){

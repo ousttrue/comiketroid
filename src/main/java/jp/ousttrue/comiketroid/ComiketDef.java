@@ -43,11 +43,13 @@ class ComiketDef {
     }
   }
 
+  String name;
   Map<String, String> dateMap;
   Map<String, String> areaMap;
   Map<String, String> genreMap;
 
-  ComiketDef(){
+  ComiketDef(String name){
+    this.name=name;
     this.dateMap=new LinkedHashMap<String, String>();
     this.areaMap=new LinkedHashMap<String, String>();
     this.genreMap=new LinkedHashMap<String, String>();
@@ -125,7 +127,9 @@ class ComiketDef {
 
   private BufferedReader getReader(){
     File sdcard=Environment.getExternalStorageDirectory();
-    final File def=(new File(sdcard, "Comiket/C81/CDATA/C81DEF.txt"));
+    final File def=(new File(sdcard, 
+          String.format("Comiket/%s/CDATA/%sDEF.txt",
+            name, name)));
     try{
       return new BufferedReader(
         new InputStreamReader(new FileInputStream(def), "Shift_JIS"));
@@ -138,6 +142,10 @@ class ComiketDef {
       Log.e(TAG, e.getMessage());
       return null;
     }
+  }
+
+  String getName(){
+    return name;
   }
 
   String getDate(String weekday){
