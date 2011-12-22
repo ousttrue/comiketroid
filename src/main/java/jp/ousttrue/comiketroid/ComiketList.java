@@ -155,6 +155,8 @@ public class ComiketList extends ListActivity {
         views
         );
     listActivity.setListAdapter(adapter);
+
+    listActivity.setTitle(String.format("%d circles", cursor.getCount()));
   }
 }
 
