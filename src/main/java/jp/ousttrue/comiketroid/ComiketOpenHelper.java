@@ -20,7 +20,7 @@ class ComiketOpenHelper extends SQLiteOpenHelper {
 
     private static String TAG = "ComiketOpenHelper";
 
-    private static final String DB="%s.db";
+    private String DB;
     private final String name;
     public static final String TABLE="rom";
     private static final String CREATE_SQL=
@@ -49,7 +49,8 @@ class ComiketOpenHelper extends SQLiteOpenHelper {
         ;
 
     public ComiketOpenHelper(Context context, String name){
-        super(context, String.format(DB, name), null, 1);
+        super(context, String.format("%s.db", name), null, 1);
+        this.DB=String.format("%s.db", name);
         this.name=name;
     }
 

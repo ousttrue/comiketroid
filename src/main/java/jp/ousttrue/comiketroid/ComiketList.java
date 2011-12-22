@@ -1,5 +1,6 @@
 package jp.ousttrue.comiketroid;
 
+import java.util.ArrayList;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -84,18 +85,63 @@ public class ComiketList extends ListActivity {
     Uri uri=intent.getData();
     Log.i(TAG, uri.toString());
 
-    String selectParams;
-    String[] selectArgs;
-    //if (intent.getData() == null) {
-      selectParams=null;
-      selectArgs=null;
-    /*
-    } else {
-      selectParams="_id=?";
-      selectArgs=new String[]{ 
-        ((Uri)intent.getData()).getPath().substring(1) };
+    String selectParams=null;
+    String[] selectArgs=null;
+    if (intent.getData() != null) {
+      // build request 
+      String[] splited=uri.getPath().substring(1).split("/");
+      StringBuffer params=new StringBuffer();
+      ArrayList<String> args=new ArrayList<String>();
+      if(!"*".equals(splited[0])){
+        // weekday
+        if(splited[0].indexOf(",")==-1){
+          params.append(" weekday=?");
+          args.add(splited[0]);
+        }
+        else{
+          String[] weekdays=splited[0].split(",");
+          StringBuffer weekdaysParams=new StringBuffer();
+          for(int i=0; i<weekdays.length; ++i){
+            if(i>0){
+              weekdaysParams.append(",");
+            }
+            weekdaysParams.append("?");
+            args.add(weekdays[i]);
+          }
+          params.append(" weekdays IN ("+weekdaysParams.toString()+")");
+        }
+      }
+      if(!"*".equals(splited[1])){
+        // block
+        if(splited[1].indexOf(",")==-1){
+          params.append(" block=?");
+          args.add(splited[1]);
+        }
+        else{
+          String[] weekdays=splited[1].split(",");
+          StringBuffer weekdaysParams=new StringBuffer();
+          for(int i=0; i<weekdays.length; ++i){
+            if(i>0){
+              weekdaysParams.append(",");
+            }
+            weekdaysParams.append("?");
+            args.add(weekdays[i]);
+          }
+          params.append(" block IN ("+weekdaysParams.toString()+")");
+        }
+      }
+      if(!args.isEmpty()){
+        Log.d(TAG, "args: "+args.size());
+        for(int i=0; i<args.size(); ++i){
+          Log.d(TAG, args.get(i));
+        }
+        Log.d(TAG, params.toString());
+
+        selectParams=params.toString();
+        selectArgs=new String[args.size()];
+        selectArgs=args.toArray(selectArgs);
+      }
     }
-    */
 
     Cursor cursor=listActivity.managedQuery(
             ComiketProvider.CONTENT_URI,

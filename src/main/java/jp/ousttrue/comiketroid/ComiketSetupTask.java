@@ -112,6 +112,8 @@ class ComiketSetupTask extends AsyncTask<Object, String, Object>
         e.printStackTrace();
         return null;
       }
+      // debug
+      break;
     }
     db.setTransactionSuccessful();
     db.endTransaction();
@@ -127,6 +129,10 @@ class ComiketSetupTask extends AsyncTask<Object, String, Object>
     while ((line = csv.readNext()) != null) {
       if(!lastBlock.equals(line[6])){
         onProgressUpdate("("+line[4]+")"+line[5]+line[6]);
+        if(!"".equals(lastBlock)){
+          // debug
+          break;
+        }
         lastBlock=line[6];
       }
       cv.clear();

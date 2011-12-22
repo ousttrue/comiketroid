@@ -26,7 +26,9 @@ public class ComiketItem extends Activity {
     setContentView(R.layout.flipper);
 
     Intent intent = getIntent();
-    int id=Integer.parseInt(((Uri)intent.getData()).getPath().substring(1));
+    Uri uri=intent.getData();
+    String[] splited=uri.getPath().substring(1).split("/");
+    int id=Integer.parseInt(splited[splited.length-1]);
 
     ViewFlipper viewFlipper = (ViewFlipper) findViewById(R.id.flipper);
     viewFlipper.setAutoStart(false);
