@@ -28,7 +28,8 @@ class ComiketOpenHelper extends SQLiteOpenHelper {
 
     private static String TAG = "ComiketOpenHelper";
 
-    private static final String DB="comiket.db";
+    private static final String DB="%s.db";
+    private final String name;
     public static final String TABLE="rom";
     private static final String CREATE_SQL=
         "CREATE TABLE IF NOT EXISTS "+TABLE+" ("+
@@ -72,8 +73,9 @@ class ComiketOpenHelper extends SQLiteOpenHelper {
         return new File(dir, "CDATA");
     }
 
-    public ComiketOpenHelper(Context context){
-        super(context, DB, null, 1);
+    public ComiketOpenHelper(Context context, String name){
+        super(context, String.format(DB, name), null, 1);
+        this.name=name;
     }
 
     @Override
@@ -125,9 +127,7 @@ class ComiketOpenHelper extends SQLiteOpenHelper {
 
     public void setup(final Activity context, final Handler onFinish)
     {
-        final ComiketOpenHelper helper=this;
         final SQLiteDatabase db=getWritableDatabase();
-
         final ProgressDialog progressDialog=createProgressDialog(context);
         final Handler handler = new Handler() {
           @Override
@@ -139,16 +139,13 @@ class ComiketOpenHelper extends SQLiteOpenHelper {
             Thread.yield();
           }
         };
+
+        // /sdcard/Comiket/C81に決めうちにする
         File sdcard=Environment.getExternalStorageDirectory();
-        // show selector
-        // /sdcard/Comiket決めうちにする
-        final File[] files=(new File(sdcard, "Comiket")).listFiles();
-        if(files.length==0){
-            message(context,
-                    "データがありません",
-                    "カタログデータをsdcardの/Comiket/C81に配置してください");
-            return;
-        }
+        File dir=new File(sdcard, String.format("Comiket/"+name));
+        setDir(dir);
+
+        final ComiketOpenHelper helper=this;
 
         // 読み込み処理
         final Thread t=new Thread(new Runnable(){
@@ -246,26 +243,7 @@ class ComiketOpenHelper extends SQLiteOpenHelper {
                 }
             }
         });
-
-        // build menu...
-        AlertDialog.Builder builder=new 
-            AlertDialog.Builder(context);
-        builder.setTitle("データを読み込むディレクトリを選択してください");
-        String[] dirs=new String[files.length];
-        for(int i=0; i<files.length; ++i){
-            dirs[i]=files[i].getName();
-        }
-        builder.setItems(dirs, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog,int whichButton) {
-                Log.i(TAG, "selected: "+files[whichButton]);
-                helper.setDir(files[whichButton]);
-                t.start();
-            }
-        });
-        builder.setNegativeButton("Cancel", null);
-        builder.create();
-        builder.show();
+        t.start();
     }
 
 }

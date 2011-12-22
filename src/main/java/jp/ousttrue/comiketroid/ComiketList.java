@@ -60,7 +60,8 @@ public class ComiketList extends ListActivity {
       }
     });
 
-    ComiketOpenHelper helper=new ComiketOpenHelper(getApplicationContext());
+    ComiketOpenHelper helper=new ComiketOpenHelper(
+        getApplicationContext(), "C81");
     if(helper.fetchAll().getCount()==0){
       Log.i(TAG, "closed");
       helper.close();
