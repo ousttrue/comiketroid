@@ -46,7 +46,7 @@ class SetAdapterHandler extends Handler {
     Log.d(TAG, "setAdapterHandler: ");
 
     Intent intent = listActivity.getIntent();
-    Uri uri=(Uri)intent.getData();
+    Uri uri=intent.getData();
     Log.i(TAG, uri.toString());
 
     String selectParams;
