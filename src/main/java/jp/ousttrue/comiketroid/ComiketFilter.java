@@ -63,11 +63,27 @@ public class ComiketFilter extends Activity {
         Log.i(TAG, "onClick");
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(
-          Uri.parse("comiket://81"),
+          Uri.parse(String.format("comiket://81/%s/%s/%s",
+              getDate(),
+              getBlock(),
+              getGenre()
+              )),
           "text/directory");
         startActivity(intent);
       }
     });
+  }
+
+  private String getDate(){
+    return "*";
+  }
+
+  private String getBlock(){
+    return "*";
+  }
+
+  private String getGenre(){
+    return "*";
   }
 
   private void addButton(ViewGroup g, String text){
