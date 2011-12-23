@@ -3,7 +3,6 @@ package jp.ousttrue.comiketroid;
 import android.os.Bundle;
 import android.app.Activity;
 import android.net.Uri;
-import android.content.Intent;
 import android.util.Log;
 import android.widget.ViewFlipper;
 
@@ -25,15 +24,10 @@ public class ComiketItem extends Activity {
 
     setContentView(R.layout.flipper);
 
-    Intent intent = getIntent();
-    Uri uri=intent.getData();
-    String[] splited=uri.getPath().substring(1).split("/");
-    int id=Integer.parseInt(splited[splited.length-1]);
-
     ViewFlipper viewFlipper = (ViewFlipper) findViewById(R.id.flipper);
     viewFlipper.setAutoStart(false);
     CursorBindingTouchListener listener=
-      new CursorBindingTouchListener(this, viewFlipper, id);
+      new CursorBindingTouchListener(this, viewFlipper);
   }
 }
 

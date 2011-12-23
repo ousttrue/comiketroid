@@ -113,7 +113,7 @@ class ComiketSetupTask extends AsyncTask<Object, String, Object>
         return null;
       }
       // debug
-      break;
+      //break;
     }
     db.setTransactionSuccessful();
     db.endTransaction();

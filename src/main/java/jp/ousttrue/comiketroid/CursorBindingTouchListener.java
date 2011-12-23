@@ -14,6 +14,8 @@ import android.widget.TextView;
 import android.widget.ImageView;
 import android.os.Environment;
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 
 
 /**
@@ -21,30 +23,6 @@ import android.app.Activity;
  */
 class CursorBindingTouchListener implements View.OnTouchListener {
   private static final String TAG = "CursorBindingTouchListener";
-  private static final String[] projection={
-    "_id", // 0
-    "x",
-    "y",
-    "page",
-    "cut",
-    "weekday", // 5
-    "area",
-    "block",
-    "space",
-    "genre",
-    "name", // 10
-    "kana",
-    "author",
-    "publish",
-    "url",
-    "email", // 15
-    "comment",
-  };
-  String getWeekday(){ return cursor.getString(5); }
-  String getArea(){ return cursor.getString(6); }
-  String getBlock(){ return cursor.getString(7); }
-  int getSpace(){ return cursor.getInt(8); }
-
   Activity activity;
   ViewFlipper viewFlipper;
   float firstTouch;
@@ -54,10 +32,9 @@ class CursorBindingTouchListener implements View.OnTouchListener {
   View[] views={null, null, null};
   ComiketDef def;
 
-  CursorBindingTouchListener(Activity activity, ViewFlipper viewFlipper, int id){
+  CursorBindingTouchListener(Activity activity, ViewFlipper viewFlipper){
     this.activity=activity;
     this.viewFlipper=viewFlipper;
-    this.id=id;
     this.firstTouch=0.0f;
     this.isFlipping=false;
     this.def=new ComiketDef("C81");
@@ -70,9 +47,14 @@ class CursorBindingTouchListener implements View.OnTouchListener {
       views[i]=view;
     }
 
+    // id from uri
+    Intent intent = activity.getIntent();
+    Uri uri=intent.getData();
+    String[] splited=uri.getPath().substring(1).split("/");
+    this.id=Integer.parseInt(splited[splited.length-1]);
+
     // find cursor position
-    this.cursor=activity.managedQuery(ComiketProvider.CONTENT_URI,
-        projection, null, null, null);
+    this.cursor=ComiketOpenHelper.query(activity);
     if(this.cursor.getCount()==0){
       return;
     }
@@ -156,10 +138,10 @@ class CursorBindingTouchListener implements View.OnTouchListener {
 
   private void updateTitle(){
     activity.setTitle(String.format("%s %s%s%d(%d/%d)", 
-          def.getDate(getWeekday()),
-          def.getAreaName(getBlock()),
-          getBlock(),
-          getSpace(),
+          def.getDate(cursor.getString(cursor.getColumnIndex("weekday"))),
+          def.getAreaName(cursor.getString(cursor.getColumnIndex("block"))),
+          cursor.getString(cursor.getColumnIndex("block")),
+          cursor.getInt(cursor.getColumnIndex("space")),
           cursor.getPosition()+1, 
           cursor.getCount()
           ));
